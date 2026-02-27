@@ -16,6 +16,16 @@
             </section>
 
             <div class="card">
+                <div class="field">
+                    <label>¿Qué quieres calcular?</label>
+                    <select id="metodo" onchange="cambiarModo()">
+                        <option value="fechas">Uso por Fechas (Días)</option>
+                        <option value="interes">Rendimientos / Inversión</option>
+                        <option value="veces">Uso por Frecuencia (Veces/Horas)</option>
+                        <option value="salario">Costo por Esfuerzo (Salario)</option>
+                    </select>
+                </div>
+
                 <div class="input-row">
                     <div class="field">
                         <label>Divisa</label>
@@ -27,18 +37,29 @@
                         </select>
                     </div>
                     <div class="field" style="flex: 2;">
-                        <label>Monto / Precio</label>
+                        <label>Precio del Objeto</label>
                         <input type="text" id="precio" placeholder="0.00" oninput="formatAndCalculate(this)">
                     </div>
                 </div>
 
-                <div class="field">
-                    <label>Modo de cálculo</label>
-                    <select id="metodo" onchange="cambiarModo()">
-                        <option value="fechas">Uso por Fechas (Días)</option>
-                        <option value="interes">Rendimientos / Inversión</option>
-                        <option value="veces">Uso por Frecuencia (Veces/Horas)</option>
-                    </select>
+                <div id="seccion-salario" class="modo-input" style="display:none;">
+                    <div class="field">
+                        <label>Tu Salario Mensual (Neto / Después de impuestos)</label>
+                        <input type="text" id="input-salario" placeholder="Ej: 20,000" oninput="formatAndCalculate(this)">
+                    </div>
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Horas trabajadas</label>
+                            <input type="text" id="input-horas-salario" placeholder="Ej: 40" oninput="formatAndCalculate(this)">
+                        </div>
+                        <div class="field">
+                            <label>Frecuencia de horas</label>
+                            <select id="tipo-horas" onchange="calcularTodo()">
+                                <option value="semana">A la semana</option>
+                                <option value="mes">Al mes</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="seccion-fechas" class="modo-input">

@@ -1,11 +1,11 @@
-/* NOTA: Definición de variables de color para mantener consistencia */
+/* NOTA: Variables de color de la marca Value. */
 :root {
     --text: #000000;
     --subtext: #777777;
     --border: #eeeeee;
 }
 
-/* NOTA: Estilos básicos del cuerpo de la página */
+/* NOTA: Configuración global del cuerpo */
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -15,20 +15,18 @@ body {
     justify-content: center;
 }
 
-/* NOTA: Contenedor que limita el ancho de la calculadora */
 .container { width: 100%; max-width: 600px; padding: 4rem 2rem; }
 
-/* NOTA: Estilo tipográfico para el título Value. */
+/* NOTA: Estilo tipográfico para el logo/título */
 .hero h1 { font-size: 4rem; letter-spacing: -3px; margin: 0; font-weight: 800; }
 .hero p { color: var(--subtext); margin-bottom: 3rem; font-size: 0.95rem; }
 
-/* NOTA: Estilos para la tarjeta y filas de entrada de datos */
+/* NOTA: Estilo de los campos de entrada */
 .card { border-top: 1px solid var(--border); padding-top: 2rem; }
 .input-row { display: flex; gap: 1.5rem; align-items: flex-end; }
 .field { display: flex; flex-direction: column; margin-bottom: 1.5rem; flex: 1; }
 label { font-size: 0.7rem; text-transform: uppercase; font-weight: 800; color: var(--subtext); margin-bottom: 0.5rem; letter-spacing: 0.5px; }
 
-/* NOTA: Estilo minimalista para inputs y selects (solo línea inferior) */
 input, select {
     border: none;
     border-bottom: 1px solid var(--border);
@@ -42,17 +40,15 @@ input, select {
 
 input:focus, select:focus { border-color: #000; }
 
-/* NOTA: Triple Slot (Día, Mes, Año) en una misma fila */
+/* NOTA: Slots de fecha alineados */
 .triple-slot {
     display: flex;
     gap: 10px;
     border-bottom: 1px solid var(--border);
 }
-
-/* NOTA: Quitamos el borde inferior de los selects dentro del slot para que no se duplique */
 .triple-slot select { border-bottom: none; padding: 0.5rem 0; cursor: pointer; flex: 1; }
 
-/* NOTA: Botón de "Hoy" con forma de cápsula pequeña */
+/* NOTA: Botones minimalistas */
 .btn-mini {
     background: transparent;
     border: 1px solid #000;
@@ -65,7 +61,6 @@ input:focus, select:focus { border-color: #000; }
     vertical-align: middle;
 }
 
-/* NOTA: Botones principales redondeados */
 .btn-pill {
     background: transparent;
     border: 1px solid #000;
@@ -79,8 +74,8 @@ input:focus, select:focus { border-color: #000; }
 
 .btn-pill:hover, .btn-mini:hover { background: #000; color: #fff; }
 
-/* NOTA: Tipografía para el resultado gigante */
+/* NOTA: Estilos para el área de resultados gigantes */
 .result-area { margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 2rem; }
-.big-number { font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin: 0.5rem 0; }
-.sub-detail { font-size: 0.85rem; color: var(--subtext); }
+.big-number { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0.5rem 0; line-height: 1.1; }
+.sub-detail { font-size: 0.85rem; color: var(--subtext); line-height: 1.6; }
 .actions { display: flex; gap: 1rem; margin-top: 2rem; }
