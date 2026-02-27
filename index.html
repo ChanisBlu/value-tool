@@ -42,17 +42,20 @@
                 </div>
 
                 <div id="seccion-fechas" class="modo-input">
-                    <div class="input-row">
-                        <div class="field">
-                            <label>Desde</label>
-                            <input type="date" id="fecha-inicio" onchange="calcularTodo()">
+                    <div class="field">
+                        <label>Desde</label>
+                        <div class="triple-slot">
+                            <select id="d1" onchange="actualizarDias('1'); calcularTodo()"></select>
+                            <select id="m1" onchange="actualizarDias('1'); calcularTodo()"></select>
+                            <select id="a1" onchange="actualizarDias('1'); calcularTodo()"></select>
                         </div>
-                        <div class="field">
-                            <label>Hasta</label>
-                            <div class="date-with-btn">
-                                <input type="date" id="fecha-fin" onchange="calcularTodo()">
-                                <button type="button" class="btn-mini" onclick="setHoy()">Hoy</button>
-                            </div>
+                    </div>
+                    <div class="field">
+                        <label>Hasta <button type="button" class="btn-mini" onclick="setHoy()">Hoy</button></label>
+                        <div class="triple-slot">
+                            <select id="d2" onchange="actualizarDias('2'); calcularTodo()"></select>
+                            <select id="m2" onchange="actualizarDias('2'); calcularTodo()"></select>
+                            <select id="a2" onchange="actualizarDias('2'); calcularTodo()"></select>
                         </div>
                     </div>
                 </div>
