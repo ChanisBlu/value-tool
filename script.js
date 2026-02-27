@@ -8,7 +8,7 @@ window.onload = function() {
     setHoy();                   // Pone fecha actual en el slot 2
 };
 
-// 3. LLENADO DE SELECTS: Crea los meses y años (de 2031 a 1900)
+// 3. GENERADOR DE OPCIONES: Crea los meses y años (Hasta 100 años al futuro y 1900 atrás)
 function inicializarSelectores(id) {
     const selMonth = document.getElementById(`m${id}`);
     const selYear = document.getElementById(`a${id}`);
@@ -17,32 +17,31 @@ function inicializarSelectores(id) {
     // NOTA: Agregar meses al dropdown
     meses.forEach((m, i) => selMonth.options.add(new Option(m, i + 1)));
     
-    // NOTA: Agregar años al dropdown (rango de 130 años aprox)
-    for (let i = currentYear + 5; i >= 1900; i--) {
+    // NOTA: Cambiamos el límite a +100 para que sea "infinito" para cálculos de vida
+    for (let i = currentYear + 100; i >= 1900; i--) {
         selYear.options.add(new Option(i, i));
     }
     
     actualizarDias(id); // Genera los días según el mes/año inicial
 }
 
-// 4. GENERADOR DE DÍAS: Ajusta el máximo de días del mes (ej. Feb tiene 28/29)
+// 4. ACTUALIZADOR DE DÍAS: Ajusta el máximo de días del mes (ej. Feb tiene 28/29)
 function actualizarDias(id) {
     const selDay = document.getElementById(`d${id}`);
     const month = parseInt(document.getElementById(`m${id}`).value);
     const year = parseInt(document.getElementById(`a${id}`).value);
-    const lastDay = new Date(year, month, 0).getDate(); // Truco JS para saber el último día
+    const lastDay = new Date(year, month, 0).getDate(); 
     
-    const prevVal = selDay.value; // Guardar qué día estaba marcado antes
-    selDay.innerHTML = ""; // Limpiar opciones
+    const prevVal = selDay.value; 
+    selDay.innerHTML = ""; 
     for (let i = 1; i <= lastDay; i++) {
         selDay.options.add(new Option(i, i));
     }
     
-    // NOTA: Si el día marcado anteriormente sigue existiendo, lo mantenemos
     if (prevVal && prevVal <= lastDay) selDay.value = prevVal;
 }
 
-// 5. BOTÓN HOY: Lógica corregida para que el día no se resetee a 1
+// 5. BOTÓN HOY: Lógica para que el día no se resetee a 1
 function setHoy() {
     const hoy = new Date();
     const d = hoy.getDate();
@@ -51,8 +50,8 @@ function setHoy() {
 
     document.getElementById('a2').value = a;
     document.getElementById('m2').value = m;
-    actualizarDias('2'); // NOTA: Esto es vital para que el dropdown sepa que existen 28, 30 o 31 días
-    document.getElementById('d2').value = d; // Ahora sí marcamos el día correcto
+    actualizarDias('2'); 
+    document.getElementById('d2').value = d; 
 
     calcularTodo();
 }
@@ -61,7 +60,7 @@ function setHoy() {
 function formatAndCalculate(input) {
     let cursorPosition = input.selectionStart;
     let oldLength = input.value.length;
-    let value = input.value.replace(/[^0-9.]/g, ''); // Limpiar caracteres no numéricos
+    let value = input.value.replace(/[^0-9.]/g, ''); 
     let parts = value.split('.');
     if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
 
@@ -72,13 +71,12 @@ function formatAndCalculate(input) {
         input.value = "";
     }
 
-    // NOTA: Ajustar cursor para que no salte al final al poner la coma
     let newLength = input.value.length;
     input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
     calcularTodo();
 }
 
-// 7. VALOR LIMPIO: Convierte "1,000" en número para matemáticas
+// 7. VALOR LIMPIO: Convierte texto a número puro
 function getRawValue(id) {
     let val = document.getElementById(id).value;
     return parseFloat(val.replace(/,/g, '')) || 0;
@@ -97,17 +95,15 @@ function calcularTodo() {
     let etiqueta = "";
     let detalle = "";
 
-    // NOTA: Lógica para cálculo por fechas (Uso Real)
     if (modo === 'fechas') {
         const f1 = new Date(document.getElementById('a1').value, document.getElementById('m1').value - 1, document.getElementById('d1').value);
         const f2 = new Date(document.getElementById('a2').value, document.getElementById('m2').value - 1, document.getElementById('d2').value);
         
-        // REGLA: Si la fecha de inicio es después de la de fin, mostramos error
         if (f1 > f2) {
             displayValor.innerText = "Fechas inválidas";
             displayEtiqueta.innerText = "Error:";
             displayDetalle.innerText = "La fecha de inicio debe ser anterior.";
-            return; // NOTA: Detenemos la función aquí
+            return; 
         }
 
         const diff = f2 - f1;
@@ -116,7 +112,6 @@ function calcularTodo() {
         etiqueta = "Costo por día:";
         detalle = `Basado en ${dias} días de uso.`;
 
-    // NOTA: Lógica para interés (360 días bancarios)
     } else if (modo === 'interes') {
         const tasa1 = getRawValue('tasa-1') / 100 || 0;
         const tasa2 = getRawValue('tasa-2') / 100 || 0;
@@ -126,7 +121,6 @@ function calcularTodo() {
         etiqueta = "Ganancia diaria:";
         detalle = `Ganancia mensual aprox (30 días): ${divisa}${(resultado * 30).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
-    // NOTA: Lógica para frecuencia manual
     } else if (modo === 'veces') {
         const veces = getRawValue('input-veces');
         if (veces > 0) {
@@ -136,7 +130,6 @@ function calcularTodo() {
         }
     }
 
-    // NOTA: Pintar el resultado si todo es correcto
     if (monto > 0 && resultado > 0) {
         displayValor.innerText = divisa + resultado.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
         displayEtiqueta.innerText = etiqueta;
@@ -147,7 +140,7 @@ function calcularTodo() {
     }
 }
 
-// 9. INTERFAZ DINÁMICA: Mostrar u ocultar secciones según el dropdown
+// 9. INTERFAZ DINÁMICA
 function cambiarModo() {
     const modo = document.getElementById('metodo').value;
     document.querySelectorAll('.modo-input').forEach(el => el.style.display = 'none');
@@ -155,7 +148,7 @@ function cambiarModo() {
     calcularTodo();
 }
 
-// 10. COMPARTIR: API nativa del navegador
+// 10. COMPARTIR
 function compartir() {
     const texto = `Value: Mi resultado es ${document.getElementById('resultado-valor').innerText}`;
     if (navigator.share) {
