@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Value | Utility Tool</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <main>
+            <section class="hero">
+                <h1>Value.</h1>
+                <p>Calcula el valor real de tus compras o planifica tu ahorro con precisión.</p>
+            </section>
+
+            <div class="card">
+                <div class="input-row">
+                    <div class="field">
+                        <label>Divisa</label>
+                        <select id="divisa" onchange="calcularTodo()">
+                            <option value="$">MXN ($)</option>
+                            <option value="$">USD ($)</option>
+                            <option value="€">EUR (€)</option>
+                            <option value="¥">JPY (¥)</option>
+                        </select>
+                    </div>
+                    <div class="field" style="flex: 2;">
+                        <label>Monto / Precio</label>
+                        <input type="text" id="precio" placeholder="0.00" oninput="formatAndCalculate(this)">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Modo de cálculo</label>
+                    <select id="metodo" onchange="cambiarModo()">
+                        <option value="fechas">Uso por Fechas (Días)</option>
+                        <option value="interes">Rendimientos / Inversión</option>
+                        <option value="veces">Uso por Frecuencia (Veces/Horas)</option>
+                    </select>
+                </div>
+
+                <div id="seccion-fechas" class="modo-input">
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Desde</label>
+                            <input type="date" id="fecha-inicio" onchange="calcularTodo()">
+                        </div>
+                        <div class="field">
+                            <label>Hasta</label>
+                            <div class="date-with-btn">
+                                <input type="date" id="fecha-fin" onchange="calcularTodo()">
+                                <button type="button" class="btn-mini" onclick="setHoy()">Hoy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="seccion-interes" class="modo-input" style="display:none;">
+                    <div class="input-row">
+                        <div class="field">
+                            <label>% Tasa Base (Anual)</label>
+                            <input type="text" id="tasa-1" placeholder="Ej: 16" oninput="formatAndCalculate(this)">
+                        </div>
+                        <div class="field">
+                            <label>Tope Tasa Alta (0 = Sin límite)</label>
+                            <input type="text" id="tope" placeholder="Ej: 10,000" oninput="formatAndCalculate(this)">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>% Tasa Excedente (Anual)</label>
+                        <input type="text" id="tasa-2" placeholder="Ej: 8" oninput="formatAndCalculate(this)">
+                    </div>
+                </div>
+
+                <div id="seccion-veces" class="modo-input" style="display:none;">
+                    <div class="field">
+                        <label>Cantidad de usos o total de horas</label>
+                        <input type="text" id="input-veces" placeholder="Ej: 100" oninput="formatAndCalculate(this)">
+                    </div>
+                </div>
+
+                <div class="result-area">
+                    <h2 id="etiqueta-resultado">Costo por día:</h2>
+                    <div class="big-number" id="resultado-valor">$0.00</div>
+                    <p id="detalle-tiempo" class="sub-detail"></p>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-pill" onclick="window.print()">Descargar</button>
+                    <button class="btn-pill" onclick="compartir()">Compartir</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
