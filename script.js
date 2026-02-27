@@ -1,14 +1,23 @@
-// NOTA: Meses para dropdowns de fecha
+// NOTA: Meses para dropdowns
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-// NOTA: Inicio automático de la aplicación
+// NOTA: Inicio automático. Ahora ponemos HOY en ambas fechas por default
 window.onload = function() {
     inicializarSelectores('1');
     inicializarSelectores('2');
+    
+    const hoy = new Date();
+    // NOTA: Seteamos 'Desde' a hoy
+    document.getElementById('a1').value = hoy.getFullYear();
+    document.getElementById('m1').value = hoy.getMonth() + 1;
+    actualizarDias('1');
+    document.getElementById('d1').value = hoy.getDate();
+    
+    // NOTA: Seteamos 'Hasta' a hoy
     setHoy();
 };
 
-// NOTA: Generador de dropdowns de fecha (+100 años)
+// NOTA: Llena dropdowns con 100 años al futuro
 function inicializarSelectores(id) {
     const selMonth = document.getElementById(`m${id}`);
     const selYear = document.getElementById(`a${id}`);
@@ -18,7 +27,7 @@ function inicializarSelectores(id) {
     actualizarDias(id);
 }
 
-// NOTA: Ajustador de días por mes
+// NOTA: Ajusta el máximo de días por mes
 function actualizarDias(id) {
     const selDay = document.getElementById(`d${id}`);
     const month = parseInt(document.getElementById(`m${id}`).value);
@@ -30,7 +39,7 @@ function actualizarDias(id) {
     if (prevVal && prevVal <= lastDay) selDay.value = prevVal;
 }
 
-// NOTA: Función para marcar el día de hoy
+// NOTA: Función para poner fecha actual en el slot 2
 function setHoy() {
     const hoy = new Date();
     document.getElementById('a2').value = hoy.getFullYear();
@@ -56,13 +65,13 @@ function formatAndCalculate(input) {
     calcularTodo();
 }
 
-// NOTA: Obtención de valor numérico puro
+// NOTA: Obtener valor numérico limpio
 function getRawValue(id) {
     let val = document.getElementById(id).value;
     return parseFloat(val.replace(/,/g, '')) || 0;
 }
 
-// NOTA: MOTOR DE CÁLCULOS
+// NOTA: MOTOR DE CÁLCULO
 function calcularTodo() {
     const monto = getRawValue('precio');
     const divisa = document.getElementById('divisa').value;
@@ -87,7 +96,7 @@ function calcularTodo() {
         displayEtiqueta.innerText = "Costo por día:";
         displayDetalle.innerText = `Basado en ${dias} días de uso.`;
 
-    // MODO: INTERÉS (Bancos)
+    // MODO: INTERÉS (Año comercial 360 días)
     } else if (modo === 'interes') {
         const t1 = getRawValue('tasa-1') / 100;
         const t2 = getRawValue('tasa-2') / 100;
@@ -108,7 +117,7 @@ function calcularTodo() {
             displayDetalle.innerText = `Distribuido en ${veces} unidades.`;
         }
 
-    // MODO: SALARIO (Esfuerzo de Vida)
+    // MODO: SALARIO
     } else if (modo === 'salario') {
         const salario = getRawValue('input-salario');
         const horasIngresadas = getRawValue('input-horas-salario');
@@ -139,9 +148,18 @@ function calcularTodo() {
     }
 }
 
-// NOTA: Cambio de vista entre modos
+// NOTA: Cambio de vista y actualización de labels
 function cambiarModo() {
     const modo = document.getElementById('metodo').value;
+    const labelMonto = document.getElementById('label-monto');
+
+    // NOTA: Cambiamos el texto del label según el modo
+    if (modo === 'interes') {
+        labelMonto.innerText = "Dinero invertido";
+    } else {
+        labelMonto.innerText = "Precio del Objeto";
+    }
+
     document.querySelectorAll('.modo-input').forEach(el => el.style.display = 'none');
     document.getElementById(`seccion-${modo}`).style.display = 'block';
     calcularTodo();
@@ -149,7 +167,7 @@ function cambiarModo() {
 
 // NOTA: API de compartir
 function compartir() {
-    const texto = `Value: Mi tiempo vale ${document.getElementById('resultado-valor').innerText}`;
+    const texto = `Value: Mi resultado es ${document.getElementById('resultado-valor').innerText}`;
     if (navigator.share) {
         navigator.share({ title: 'Value Tool', text: texto, url: window.location.href });
     } else { alert("Link copiado"); }

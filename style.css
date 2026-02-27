@@ -1,11 +1,11 @@
-/* NOTA: Variables de colores de Value. */
+/* NOTA: Paleta de colores minimalista */
 :root {
     --text: #000000;
     --subtext: #777777;
     --border: #eeeeee;
 }
 
-/* NOTA: Configuración de cuerpo y centrado */
+/* NOTA: Estilo global de la página */
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -17,11 +17,11 @@ body {
 
 .container { width: 100%; max-width: 600px; padding: 4rem 2rem; }
 
-/* NOTA: Título minimalista */
+/* NOTA: Tipografía Hero */
 .hero h1 { font-size: 4rem; letter-spacing: -3px; margin: 0; font-weight: 800; }
 .hero p { color: var(--subtext); margin-bottom: 2.5rem; font-size: 0.95rem; }
 
-/* NOTA: Tarjeta de datos y campos */
+/* NOTA: Tarjeta y campos de entrada */
 .card { border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .input-row { display: flex; gap: 1.5rem; align-items: flex-end; }
 .field { display: flex; flex-direction: column; margin-bottom: 1.2rem; flex: 1; }
@@ -40,11 +40,11 @@ input, select {
 
 input:focus, select:focus { border-color: #000; }
 
-/* NOTA: Slots de fecha en una línea */
+/* NOTA: Triple Slot para fechas */
 .triple-slot { display: flex; gap: 8px; border-bottom: 1px solid var(--border); }
 .triple-slot select { border-bottom: none; padding: 0.4rem 0; cursor: pointer; flex: 1; }
 
-/* NOTA: Botones minimalistas */
+/* NOTA: Botones estilo Value. */
 .btn-mini {
     background: transparent;
     border: 1px solid #000;
@@ -70,7 +70,7 @@ input:focus, select:focus { border-color: #000; }
 
 .btn-pill:hover, .btn-mini:hover { background: #000; color: #fff; }
 
-/* NOTA: RESULTADO: Reducimos margin-top para que no esté tan "lejos" */
+/* NOTA: Visualización de resultados */
 .result-area { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .big-number { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0.4rem 0; line-height: 1.1; }
 .sub-detail { font-size: 0.85rem; color: var(--subtext); line-height: 1.5; }
