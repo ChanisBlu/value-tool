@@ -1,23 +1,20 @@
 // NOTA: Meses para dropdowns
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-// NOTA: Inicio automático. Ahora ponemos HOY en ambas fechas por default
+// NOTA: Inicialización de la App
 window.onload = function() {
     inicializarSelectores('1');
     inicializarSelectores('2');
     
+    // NOTA: Seteamos HOY en ambos slots al iniciar
     const hoy = new Date();
-    // NOTA: Seteamos 'Desde' a hoy
     document.getElementById('a1').value = hoy.getFullYear();
     document.getElementById('m1').value = hoy.getMonth() + 1;
     actualizarDias('1');
     document.getElementById('d1').value = hoy.getDate();
-    
-    // NOTA: Seteamos 'Hasta' a hoy
     setHoy();
 };
 
-// NOTA: Llena dropdowns con 100 años al futuro
 function inicializarSelectores(id) {
     const selMonth = document.getElementById(`m${id}`);
     const selYear = document.getElementById(`a${id}`);
@@ -27,7 +24,6 @@ function inicializarSelectores(id) {
     actualizarDias(id);
 }
 
-// NOTA: Ajusta el máximo de días por mes
 function actualizarDias(id) {
     const selDay = document.getElementById(`d${id}`);
     const month = parseInt(document.getElementById(`m${id}`).value);
@@ -39,7 +35,6 @@ function actualizarDias(id) {
     if (prevVal && prevVal <= lastDay) selDay.value = prevVal;
 }
 
-// NOTA: Función para poner fecha actual en el slot 2
 function setHoy() {
     const hoy = new Date();
     document.getElementById('a2').value = hoy.getFullYear();
@@ -49,7 +44,6 @@ function setHoy() {
     calcularTodo();
 }
 
-// NOTA: Formateo de comas en tiempo real
 function formatAndCalculate(input) {
     let cursorPosition = input.selectionStart;
     let oldLength = input.value.length;
@@ -65,13 +59,12 @@ function formatAndCalculate(input) {
     calcularTodo();
 }
 
-// NOTA: Obtener valor numérico limpio
 function getRawValue(id) {
     let val = document.getElementById(id).value;
     return parseFloat(val.replace(/,/g, '')) || 0;
 }
 
-// NOTA: MOTOR DE CÁLCULO
+// NOTA: MOTOR DE CÁLCULO - Lógica de equivalencia corregida
 function calcularTodo() {
     const monto = getRawValue('precio');
     const divisa = document.getElementById('divisa').value;
@@ -80,7 +73,6 @@ function calcularTodo() {
     const displayEtiqueta = document.getElementById('etiqueta-resultado');
     const displayDetalle = document.getElementById('detalle-tiempo');
 
-    // MODO: FECHAS
     if (modo === 'fechas') {
         const f1 = new Date(document.getElementById('a1').value, document.getElementById('m1').value - 1, document.getElementById('d1').value);
         const f2 = new Date(document.getElementById('a2').value, document.getElementById('m2').value - 1, document.getElementById('d2').value);
@@ -96,7 +88,6 @@ function calcularTodo() {
         displayEtiqueta.innerText = "Costo por día:";
         displayDetalle.innerText = `Basado en ${dias} días de uso.`;
 
-    // MODO: INTERÉS (Año comercial 360 días)
     } else if (modo === 'interes') {
         const t1 = getRawValue('tasa-1') / 100;
         const t2 = getRawValue('tasa-2') / 100;
@@ -107,7 +98,6 @@ function calcularTodo() {
         displayEtiqueta.innerText = "Ganancia diaria:";
         displayDetalle.innerText = `Ganancia mensual aprox: ${divisa}${(res * 30).toLocaleString()}`;
 
-    // MODO: VECES
     } else if (modo === 'veces') {
         const veces = getRawValue('input-veces');
         if (veces > 0) {
@@ -117,30 +107,32 @@ function calcularTodo() {
             displayDetalle.innerText = `Distribuido en ${veces} unidades.`;
         }
 
-    // MODO: SALARIO
     } else if (modo === 'salario') {
-        const salario = getRawValue('input-salario');
-        const horasIngresadas = getRawValue('input-horas-salario');
-        const tipoHoras = document.getElementById('tipo-horas').value;
+        const salarioNeto = getRawValue('input-salario');
+        const horasEntrada = getRawValue('input-horas-salario');
+        const frecuencia = document.getElementById('tipo-horas').value;
 
-        if (salario > 0 && horasIngresadas > 0 && monto > 0) {
-            let horasMensuales = (tipoHoras === 'semana') ? (horasIngresadas * 4.33) : horasIngresadas;
-            const valorHora = salario / horasMensuales;
-            const totalHorasVida = monto / valorHora;
-            const horasAlDia = (tipoHoras === 'semana') ? (horasIngresadas / 5) : (horasMensuales / 22);
-            
-            const totalDiasVida = totalHorasVida / horasAlDia;
-            const totalMesesVida = monto / salario;
-            const totalAnosVida = totalMesesVida / 12;
+        if (salarioNeto > 0 && horasEntrada > 0 && monto > 0) {
+            // NOTA: Lógica de equivalencia independiente
+            let horasMensualesTotales = (frecuencia === 'semana') ? (horasEntrada * 4.33) : horasEntrada;
+            let horasDiariasLaborales = (frecuencia === 'semana') ? (horasEntrada / 5) : (horasEntrada / 22);
+
+            const valorHora = salarioNeto / horasMensualesTotales;
+
+            // Resultados Individuales (Equivalencias totales)
+            const horasEquiv = monto / valorHora;
+            const diasEquiv = horasEquiv / horasDiariasLaborales;
+            const mesesEquiv = monto / salarioNeto;
+            const anosEquiv = mesesEquiv / 12;
 
             displayEtiqueta.innerText = "Tu tiempo vale:";
             displayValor.innerText = `${divisa}${valorHora.toLocaleString(undefined, {minimumFractionDigits: 2})} / h`;
             
             displayDetalle.innerHTML = `Necesitas:<br>
-                • <strong>${totalHorasVida.toFixed(1)}</strong> horas de vida<br>
-                • <strong>${totalDiasVida.toFixed(1)}</strong> días de trabajo<br>
-                • <strong>${totalMesesVida.toFixed(1)}</strong> meses de salario<br>
-                • <strong>${totalAnosVida.toFixed(2)}</strong> años de esfuerzo`;
+                • <strong>${horasEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Horas totales<br>
+                • <strong>${diasEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Días laborales<br>
+                • <strong>${mesesEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Meses de salario<br>
+                • <strong>${anosEquiv.toLocaleString(undefined, {maximumFractionDigits: 2})}</strong> Años de esfuerzo`;
         } else {
             displayValor.innerText = divisa + "0.00";
             displayDetalle.innerText = "Completa los datos de salario.";
@@ -148,27 +140,18 @@ function calcularTodo() {
     }
 }
 
-// NOTA: Cambio de vista y actualización de labels
 function cambiarModo() {
     const modo = document.getElementById('metodo').value;
     const labelMonto = document.getElementById('label-monto');
-
-    // NOTA: Cambiamos el texto del label según el modo
-    if (modo === 'interes') {
-        labelMonto.innerText = "Dinero invertido";
-    } else {
-        labelMonto.innerText = "Precio del Objeto";
-    }
-
+    labelMonto.innerText = (modo === 'interes') ? "Dinero invertido" : "Precio del Objeto";
     document.querySelectorAll('.modo-input').forEach(el => el.style.display = 'none');
     document.getElementById(`seccion-${modo}`).style.display = 'block';
     calcularTodo();
 }
 
-// NOTA: API de compartir
 function compartir() {
-    const texto = `Value: Mi resultado es ${document.getElementById('resultado-valor').innerText}`;
+    const texto = `Value: Mi tiempo vale ${document.getElementById('resultado-valor').innerText}`;
     if (navigator.share) {
         navigator.share({ title: 'Value Tool', text: texto, url: window.location.href });
-    } else { alert("Link copiado"); }
+    } else { alert("Copiado al portapapeles"); }
 }
