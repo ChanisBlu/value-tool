@@ -1,24 +1,32 @@
-// NOTA: Meses para dropdowns
+// 1. CONFIGURACIÓN: Nombres de meses y arranque de la App
 const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-// NOTA: Inicialización de la App
 window.onload = function() {
     inicializarSelectores('1');
     inicializarSelectores('2');
     
-    // NOTA: Seteamos HOY en ambos slots al iniciar
+    // NOTA: Seteamos HOY en ambas fechas por defecto al iniciar
     const hoy = new Date();
-    document.getElementById('a1').value = hoy.getFullYear();
-    document.getElementById('m1').value = hoy.getMonth() + 1;
+    const d = hoy.getDate();
+    const m = hoy.getMonth() + 1;
+    const a = hoy.getFullYear();
+
+    // Seteamos 'Desde'
+    document.getElementById('a1').value = a;
+    document.getElementById('m1').value = m;
     actualizarDias('1');
-    document.getElementById('d1').value = hoy.getDate();
+    document.getElementById('d1').value = d;
+
+    // Seteamos 'Hasta' usando la función global
     setHoy();
 };
 
+// 2. FECHAS: Lógica de Dropdowns y Slots
 function inicializarSelectores(id) {
     const selMonth = document.getElementById(`m${id}`);
     const selYear = document.getElementById(`a${id}`);
     const currentYear = new Date().getFullYear();
+
     meses.forEach((m, i) => selMonth.options.add(new Option(m, i + 1)));
     for (let i = currentYear + 100; i >= 1900; i--) selYear.options.add(new Option(i, i));
     actualizarDias(id);
@@ -44,16 +52,19 @@ function setHoy() {
     calcularTodo();
 }
 
+// 3. FORMATEO: Comas para miles y Puntos para decimales ($1,000.00)
 function formatAndCalculate(input) {
     let cursorPosition = input.selectionStart;
     let oldLength = input.value.length;
-    let value = input.value.replace(/[^0-9.]/g, '');
+    let value = input.value.replace(/[^0-9.]/g, ''); 
     let parts = value.split('.');
     if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
+
     if (value !== "") {
         let formatted = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         input.value = parts.length === 2 ? formatted + "." + parts[1] : formatted;
     } else { input.value = ""; }
+
     let newLength = input.value.length;
     input.setSelectionRange(cursorPosition + (newLength - oldLength), cursorPosition + (newLength - oldLength));
     calcularTodo();
@@ -64,7 +75,7 @@ function getRawValue(id) {
     return parseFloat(val.replace(/,/g, '')) || 0;
 }
 
-// NOTA: MOTOR DE CÁLCULO - Lógica de equivalencia corregida
+// 4. MOTOR DE CÁLCULO: Donde ocurre la magia
 function calcularTodo() {
     const monto = getRawValue('precio');
     const divisa = document.getElementById('divisa').value;
@@ -73,73 +84,77 @@ function calcularTodo() {
     const displayEtiqueta = document.getElementById('etiqueta-resultado');
     const displayDetalle = document.getElementById('detalle-tiempo');
 
+    // Configuración estándar: Coma para miles, Punto para decimales ($0.00)
+    const formatConfig = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+
     if (modo === 'fechas') {
         const f1 = new Date(document.getElementById('a1').value, document.getElementById('m1').value - 1, document.getElementById('d1').value);
         const f2 = new Date(document.getElementById('a2').value, document.getElementById('m2').value - 1, document.getElementById('d2').value);
+        
         if (f1 > f2) {
             displayValor.innerText = "Fechas inválidas";
             displayEtiqueta.innerText = "Error:";
-            displayDetalle.innerText = "La fecha de inicio debe ser anterior.";
+            displayDetalle.innerText = "La fecha 'Desde' debe ser anterior.";
             return;
         }
+
         const dias = Math.ceil((f2 - f1) / (1000 * 60 * 60 * 24)) || 1;
         const res = monto / dias;
-        displayValor.innerText = divisa + res.toLocaleString(undefined, {minimumFractionDigits: 2});
+        displayValor.innerText = divisa + res.toLocaleString('en-US', formatConfig);
         displayEtiqueta.innerText = "Costo por día:";
-        displayDetalle.innerText = `Basado en ${dias} días de uso.`;
+        displayDetalle.innerText = `Basado en ${dias.toLocaleString()} días de uso acumulados.`;
 
     } else if (modo === 'interes') {
         const t1 = getRawValue('tasa-1') / 100;
         const t2 = getRawValue('tasa-2') / 100;
         const tope = getRawValue('tope');
         let rendimientoAnual = (tope === 0) ? (monto * t1) : ((Math.min(monto, tope) * t1) + (Math.max(0, monto - tope) * t2));
-        const res = rendimientoAnual / 360;
-        displayValor.innerText = divisa + res.toLocaleString(undefined, {minimumFractionDigits: 2});
+        const res = rendimientoAnual / 360; // Año comercial bancario
+        
+        displayValor.innerText = divisa + res.toLocaleString('en-US', formatConfig);
         displayEtiqueta.innerText = "Ganancia diaria:";
-        displayDetalle.innerText = `Ganancia mensual aprox: ${divisa}${(res * 30).toLocaleString()}`;
+        displayDetalle.innerText = `Ganancia mensual aprox: ${divisa}${(res * 30).toLocaleString('en-US', formatConfig)}`;
 
+    } else if (modo === 'salario') {
+        const salario = getRawValue('input-salario');
+        const horasEntrada = getRawValue('input-horas-salario');
+        const frecuencia = document.getElementById('tipo-horas').value;
+
+        if (salario > 0 && horasEntrada > 0 && monto > 0) {
+            // Lógica de equivalencias independientes
+            let hMensuales = (frecuencia === 'semana') ? (horasEntrada * 4.33) : horasEntrada;
+            let hDiarias = (frecuencia === 'semana') ? (horasEntrada / 5) : (horasEntrada / 22);
+            
+            const valorHora = salario / hMensuales;
+            const hEquiv = monto / valorHora;
+            const dEquiv = hEquiv / hDiarias;
+            const mEquiv = monto / salario;
+            const aEquiv = mEquiv / 12;
+
+            displayEtiqueta.innerText = "Tu tiempo vale:";
+            displayValor.innerText = `${divisa}${valorHora.toLocaleString('en-US', formatConfig)} / h`;
+            
+            displayDetalle.innerHTML = `Necesitas:<br>
+                • <strong>${hEquiv.toLocaleString('en-US', {maximumFractionDigits: 1})}</strong> Horas totales<br>
+                • <strong>${dEquiv.toLocaleString('en-US', {maximumFractionDigits: 1})}</strong> Días laborales<br>
+                • <strong>${mEquiv.toLocaleString('en-US', {maximumFractionDigits: 1})}</strong> Meses de salario<br>
+                • <strong>${aEquiv.toLocaleString('en-US', {maximumFractionDigits: 2})}</strong> Años de esfuerzo`;
+        } else {
+            displayValor.innerText = divisa + "0.00";
+            displayDetalle.innerText = "Ingresa tu salario para dimensionar.";
+        }
     } else if (modo === 'veces') {
         const veces = getRawValue('input-veces');
         if (veces > 0) {
             const res = monto / veces;
-            displayValor.innerText = divisa + res.toLocaleString(undefined, {minimumFractionDigits: 2});
+            displayValor.innerText = divisa + res.toLocaleString('en-US', formatConfig);
             displayEtiqueta.innerText = "Costo por uso:";
             displayDetalle.innerText = `Distribuido en ${veces} unidades.`;
-        }
-
-    } else if (modo === 'salario') {
-        const salarioNeto = getRawValue('input-salario');
-        const horasEntrada = getRawValue('input-horas-salario');
-        const frecuencia = document.getElementById('tipo-horas').value;
-
-        if (salarioNeto > 0 && horasEntrada > 0 && monto > 0) {
-            // NOTA: Lógica de equivalencia independiente
-            let horasMensualesTotales = (frecuencia === 'semana') ? (horasEntrada * 4.33) : horasEntrada;
-            let horasDiariasLaborales = (frecuencia === 'semana') ? (horasEntrada / 5) : (horasEntrada / 22);
-
-            const valorHora = salarioNeto / horasMensualesTotales;
-
-            // Resultados Individuales (Equivalencias totales)
-            const horasEquiv = monto / valorHora;
-            const diasEquiv = horasEquiv / horasDiariasLaborales;
-            const mesesEquiv = monto / salarioNeto;
-            const anosEquiv = mesesEquiv / 12;
-
-            displayEtiqueta.innerText = "Tu tiempo vale:";
-            displayValor.innerText = `${divisa}${valorHora.toLocaleString(undefined, {minimumFractionDigits: 2})} / h`;
-            
-            displayDetalle.innerHTML = `Necesitas:<br>
-                • <strong>${horasEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Horas totales<br>
-                • <strong>${diasEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Días laborales<br>
-                • <strong>${mesesEquiv.toLocaleString(undefined, {maximumFractionDigits: 1})}</strong> Meses de salario<br>
-                • <strong>${anosEquiv.toLocaleString(undefined, {maximumFractionDigits: 2})}</strong> Años de esfuerzo`;
-        } else {
-            displayValor.innerText = divisa + "0.00";
-            displayDetalle.innerText = "Completa los datos de salario.";
         }
     }
 }
 
+// 5. INTERFAZ: Dinámica de pantalla
 function cambiarModo() {
     const modo = document.getElementById('metodo').value;
     const labelMonto = document.getElementById('label-monto');
@@ -150,8 +165,8 @@ function cambiarModo() {
 }
 
 function compartir() {
-    const texto = `Value: Mi tiempo vale ${document.getElementById('resultado-valor').innerText}`;
+    const texto = `Value: Mi resultado es ${document.getElementById('resultado-valor').innerText}`;
     if (navigator.share) {
         navigator.share({ title: 'Value Tool', text: texto, url: window.location.href });
-    } else { alert("Copiado al portapapeles"); }
+    } else { alert("Link copiado al portapapeles"); }
 }

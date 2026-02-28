@@ -1,4 +1,4 @@
-/* NOTA: Colores y variables globales */
+/* NOTA: Variables de colores y estilos globales */
 :root {
     --text: #000000;
     --subtext: #777777;
@@ -16,20 +16,28 @@ body {
 
 .container { width: 100%; max-width: 600px; padding: 4rem 2rem; }
 
-/* NOTA: Tipografía fuerte para el logo */
+/* NOTA: Tipografía del Título */
 .hero h1 { font-size: 4rem; letter-spacing: -3px; margin: 0; font-weight: 800; }
-.hero p { color: var(--subtext); margin-bottom: 2.5rem; font-size: 0.95rem; }
+.hero p { color: var(--subtext); margin-bottom: 2.5rem; font-size: 0.95rem; line-height: 1.5; }
 
-/* NOTA: Diseño de los campos y labels */
+/* NOTA: Diseño de la Tarjeta y Formulario */
 .card { border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .input-row { display: flex; gap: 1.5rem; align-items: flex-end; }
 .field { display: flex; flex-direction: column; margin-bottom: 1.2rem; flex: 1; }
-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 800; color: var(--subtext); margin-bottom: 0.4rem; letter-spacing: 0.5px; }
+
+label { 
+    font-size: 0.7rem; 
+    text-transform: uppercase; 
+    font-weight: 800; 
+    color: var(--subtext); 
+    margin-bottom: 0.4rem; 
+    letter-spacing: 0.5px; 
+}
 
 input, select {
     border: none;
     border-bottom: 1px solid var(--border);
-    padding: 0.4rem 0;
+    padding: 0.5rem 0;
     font-size: 1rem;
     outline: none;
     background: transparent;
@@ -39,10 +47,16 @@ input, select {
 
 input:focus, select:focus { border-color: #000; }
 
-/* NOTA: Triple Slot para las fechas */
-.triple-slot { display: flex; gap: 8px; border-bottom: 1px solid var(--border); }
-.triple-slot select { border-bottom: none; padding: 0.4rem 0; cursor: pointer; flex: 1; }
+/* NOTA: Estilo de los Triple Slots (Fechas) */
+.triple-slot {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+}
 
+.triple-slot select { border-bottom: none; padding: 0.5rem 0; cursor: pointer; flex: 1; }
+
+/* NOTA: Botones */
 .btn-mini {
     background: transparent;
     border: 1px solid #000;
@@ -58,7 +72,7 @@ input:focus, select:focus { border-color: #000; }
 .btn-pill {
     background: transparent;
     border: 1px solid #000;
-    padding: 0.6rem 1.6rem;
+    padding: 0.7rem 1.8rem;
     border-radius: 50px;
     font-weight: 800;
     cursor: pointer;
@@ -68,8 +82,8 @@ input:focus, select:focus { border-color: #000; }
 
 .btn-pill:hover, .btn-mini:hover { background: #000; color: #fff; }
 
-/* NOTA: Resultados con espaciado ajustado */
+/* NOTA: Área de Resultados Gigantes */
 .result-area { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .big-number { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0.4rem 0; line-height: 1.1; }
-.sub-detail { font-size: 0.85rem; color: var(--subtext); line-height: 1.5; }
+.sub-detail { font-size: 0.85rem; color: var(--subtext); line-height: 1.6; }
 .actions { display: flex; gap: 1rem; margin-top: 2rem; }
