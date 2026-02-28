@@ -1,4 +1,4 @@
-/* NOTA: Variables de colores y estilos globales */
+/* NOTA: Paleta de colores minimalista y variables */
 :root {
     --text: #000000;
     --subtext: #777777;
@@ -16,11 +16,11 @@ body {
 
 .container { width: 100%; max-width: 600px; padding: 4rem 2rem; }
 
-/* NOTA: Tipografía del Título */
+/* NOTA: Estilos del Hero / Logo */
 .hero h1 { font-size: 4rem; letter-spacing: -3px; margin: 0; font-weight: 800; }
 .hero p { color: var(--subtext); margin-bottom: 2.5rem; font-size: 0.95rem; line-height: 1.5; }
 
-/* NOTA: Diseño de la Tarjeta y Formulario */
+/* NOTA: Formulario y campos */
 .card { border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .input-row { display: flex; gap: 1.5rem; align-items: flex-end; }
 .field { display: flex; flex-direction: column; margin-bottom: 1.2rem; flex: 1; }
@@ -47,42 +47,34 @@ input, select {
 
 input:focus, select:focus { border-color: #000; }
 
-/* NOTA: Estilo de los Triple Slots (Fechas) */
-.triple-slot {
-    display: flex;
-    gap: 8px;
-    border-bottom: 1px solid var(--border);
+/* NOTA: Estilo para la ayuda dinámica debajo del dropdown */
+.mode-help {
+    font-size: 0.8rem;
+    color: var(--subtext);
+    margin-top: 0.8rem;
+    line-height: 1.4;
+    font-style: italic;
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
 }
 
+/* NOTA: Estilo de slots de fecha */
+.triple-slot { display: flex; gap: 8px; border-bottom: 1px solid var(--border); }
 .triple-slot select { border-bottom: none; padding: 0.5rem 0; cursor: pointer; flex: 1; }
 
 /* NOTA: Botones */
 .btn-mini {
-    background: transparent;
-    border: 1px solid #000;
-    border-radius: 50px;
-    padding: 2px 10px;
-    font-size: 0.6rem;
-    font-weight: 800;
-    cursor: pointer;
-    margin-left: 8px;
-    vertical-align: middle;
+    background: transparent; border: 1px solid #000; border-radius: 50px;
+    padding: 2px 10px; font-size: 0.6rem; font-weight: 800; cursor: pointer;
+    margin-left: 8px; vertical-align: middle;
 }
-
 .btn-pill {
-    background: transparent;
-    border: 1px solid #000;
-    padding: 0.7rem 1.8rem;
-    border-radius: 50px;
-    font-weight: 800;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: 0.2s;
+    background: transparent; border: 1px solid #000; padding: 0.7rem 1.8rem;
+    border-radius: 50px; font-weight: 800; cursor: pointer; font-size: 0.8rem; transition: 0.2s;
 }
-
 .btn-pill:hover, .btn-mini:hover { background: #000; color: #fff; }
 
-/* NOTA: Área de Resultados Gigantes */
+/* NOTA: Área de Resultados */
 .result-area { margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
 .big-number { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin: 0.4rem 0; line-height: 1.1; }
 .sub-detail { font-size: 0.85rem; color: var(--subtext); line-height: 1.6; }

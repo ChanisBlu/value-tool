@@ -24,6 +24,7 @@
                         <option value="veces">Uso por Frecuencia (Veces/Horas)</option>
                         <option value="salario">Costo por Esfuerzo (Salario)</option>
                     </select>
+                    <p id="descripcion-modo" class="mode-help">Ideal para suscripciones o compras grandes. Mira cuánto te cuesta un objeto por cada día que pasa desde que lo compraste.</p>
                 </div>
 
                 <div class="input-row">
@@ -44,7 +45,7 @@
 
                 <div id="seccion-salario" class="modo-input" style="display:none;">
                     <div class="field">
-                        <label>Tu Salario Mensual (Neto / Tras impuestos)</label>
+                        <label>Tu Salario Mensual (Neto)</label>
                         <input type="text" id="input-salario" placeholder="Ej: 20,000" oninput="formatAndCalculate(this)">
                     </div>
                     <div class="input-row">
@@ -83,24 +84,15 @@
 
                 <div id="seccion-interes" class="modo-input" style="display:none;">
                     <div class="input-row">
-                        <div class="field">
-                            <label>% Tasa Base</label>
-                            <input type="text" id="tasa-1" placeholder="Ej: 16" oninput="formatAndCalculate(this)">
-                        </div>
-                        <div class="field">
-                            <label>Tope Tasa Alta</label>
-                            <input type="text" id="tope" placeholder="0 = Sin límite" oninput="formatAndCalculate(this)">
-                        </div>
+                        <div class="field"><label>% Tasa Base</label><input type="text" id="tasa-1" oninput="formatAndCalculate(this)" placeholder="Ej: 16"></div>
+                        <div class="field"><label>Tope Tasa Alta</label><input type="text" id="tope" oninput="formatAndCalculate(this)" placeholder="Ej: 10,000"></div>
                     </div>
-                    <div class="field">
-                        <label>% Tasa Excedente</label>
-                        <input type="text" id="tasa-2" placeholder="Ej: 8" oninput="formatAndCalculate(this)">
-                    </div>
+                    <div class="field"><label>% Tasa Excedente</label><input type="text" id="tasa-2" oninput="formatAndCalculate(this)" placeholder="Ej: 8.5"></div>
                 </div>
 
                 <div id="seccion-veces" class="modo-input" style="display:none;">
                     <div class="field">
-                        <label>Cantidad de usos o total de horas</label>
+                        <label>Cantidad de usos totales</label>
                         <input type="text" id="input-veces" placeholder="Ej: 100" oninput="formatAndCalculate(this)">
                     </div>
                 </div>
